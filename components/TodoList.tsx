@@ -1,19 +1,22 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { TodoItem } from '@/components/TodoItem';
+import { supabase } from '@/lib/supabase';
 
-interface Todo {
-  id: number;
-  title: string;
-}
+export function TodoList() {
+  const [todos, setTodos] = useState([]);
 
-interface TodoListProps {
-  todos: Todo[];
-}
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const { data } = await supabase.from('todos').select('*');
+      setTodos(data || []);
+    };
+    fetchTodos();
+  }, []);
 
-export function TodoList({ todos }: TodoListProps) {
   return (
-    <ul className="list-disc pl-5">
+    <ul>
       {todos.map((todo) => (
         <TodoItem key={todo.id} todo={todo} />
       ))}
